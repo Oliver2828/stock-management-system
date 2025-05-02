@@ -1,15 +1,17 @@
+// src/components/Shared/ProtectedRoute.jsx
 import React from 'react';
-import { useAuth } from "../../contexts/AuthContext"
-import { Navigate } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
-const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth()
-  
-  if (!user) {
-    return <Navigate to="/login" replace />
-  }
+export default function ProtectedRoute() {
+  const { token, loading } = useAuth();
 
-  return children
+  // you can also gate on loading if you want
+  if (loading) return <div>Loading…</div>;
+
+  // if not logged in, send to /login
+  if (!token) return <Navigate to="/login" replace />;
+
+  // otherwise render the child routes
+  return <Outlet />;
 }
-
-export default ProtectedRoute
